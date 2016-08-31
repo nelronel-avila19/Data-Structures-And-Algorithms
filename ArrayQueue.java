@@ -1,112 +1,138 @@
-
 public class ArrayQueue {
+  
+  private int capacity;
+  private int head = 0;
+  private int tail = 0;
+  private int[] storage;
+  
+  public ArrayQueue(int size) {
+    capacity = size;
+    storage = new int[capacity]; 
+  } 
 
-       private int capacity ;
-       private int top = 0;
-       private String storage[];
-        
-      
-    public ArrayQueue(int size){
-        capacity=size;
-        storage= new String[capacity];
-        
+  public void show() {
+    for (int i = 0; i < capacity; i++) {
+      System.out.println("queue["+ i +"] = " + storage[adjust(head+i)]);         
     }
-    public void show(){
-        for(int i=capacity-1; i>=0; i++){
-            System.out.println("Queue[" + i + "] =" + storage[i]);
-        }
-       System.out.println();
+    System.out.println();
+    System.out.println("STORAGE STATUS: ");
+    System.out.println("Size : " + capacity );
+    System.out.println("Empty: " + (capacity-tail) + " left");
+    peekHead();
+    peekTail();
+    System.out.println();
+  }
+  
+  private boolean isEmpty() {
+    if (tail == 0) {
+      System.out.println("Storage is EMPTY!");
+      return true;
+    } 
+    return false;
+  }
+
+  private boolean isFull() {
+    if (tail == capacity) {
+      System.out.println("Storage is FULL.");
+      return true;
     }
-        
-        private boolean isEmpty(){
-            if (storage[0] == null){
-                System.out.println("The Queue is Empty!");
-                System.out.println();
-                return true;
-            }
-            return false;
-        }
-        
-        private boolean isFull(){
-            if(top == capacity){
-                System.out.println("The Queue is Full!");
-                return true;
-            }
-            return false;
-        }
-        
-        public void enqueue(String value){
-            if (isFull ()) {
-                System.out.println("ADD FAILED!");
-                System.out.println();
-            }else{
-                System.out.print("... Trying to enqueue[" + top +"]...");
-                storage[top]=value;
-                top--;
-                System.out.println(value + " was succesfully added.");
-                System.out.println();
-            }
-        }
-        public void dequeue(){
-            if(isEmpty()){
-                System.out.print("REMOVE FAILED!");
-                System.out.println();
-            }else{
-                System.out.println("... trying to dequeue[" + (top-1) + "] ...");
-                storage[top]=null;
-                top++;
-                System.out.println(storage[top] + " was succesfully removed.");
-                System.out.println();
-            }
-        }
-        
-        public void peek(){
-            if(storage[top]==(storage[0])){
-                System.out.println("PEEK TOP " + storage[top]);
-                System.out.println();
-            }else{
-                System.out.println("PEEK TOP " + storage[top-1]);
-                System.out.println();
-            }
-        }
-        
-        public static void main(String [] args){
-        
-            ArrayQueue storage=new ArrayQueue(10);
-          
-            
-            System.out.println("STORAGE CAPACITY = " + storage.capacity);
-            System.out.println();
-           
-            storage.isEmpty();
-            storage.dequeue();
-            storage.peek();
-            storage.enqueue("one");
-            storage.show();
-            storage.peek();
-            storage.enqueue("two");
-            storage.show();
-            storage.peek();
-            storage.enqueue("three");
-            storage.show();
-            storage.peek();
-            storage.enqueue("four");
-            storage.show();
-            storage.peek();
-            storage.enqueue("five");
-            storage.show();
-            storage.dequeue();
-            storage.enqueue("six");
-            storage.enqueue("seven");
-            storage.enqueue("eight");
-            storage.enqueue("nine");
-            storage.enqueue("ten");
-            storage.show();
-            storage.dequeue();         
-            storage.enqueue("eleven");
-            storage.enqueue("twelve");
-            storage.show();
-               
-           
-        }
+    return false;
+  }
+
+  public void enqueue(int value) {    
+    System.out.println("...trying to enqueue " + value + " ...");
+    if (isFull()) {      
+      System.out.println("ADD FAILED.");
+      System.out.println();
+    } else {
+      storage[adjust(head+tail)] = value;
+      tail++;
+      System.out.println( value + "was successfully added.");
+      System.out.println();  
+    }     
+  }
+
+  public int dequeue() {
+    System.out.println("...trying to dequeue " + storage[head] + " ...");
+    if (isEmpty()) {      
+      System.out.println("REMOVE FAILED.");
+      System.out.println();
+      return -1;
+    } else {
+      int temp = storage[head];
+      storage[head] = 0;
+      head = adjust(head+1);
+      tail--;
+      System.out.println( temp + " was successfully removed.");
+      System.out.println();
+      return temp;      
+    }    
+  }
+
+  private final int adjust(int i) {
+    return (i + capacity) % capacity;
+  }
+
+  public int peekHead() {
+    System.out.println("Head : " + storage[head]);
+    if (isEmpty()) {      
+      return -1;
+    }
+    return 0;
+  }
+
+  public int peekTail() {
+    if (isEmpty()) {
+      System.out.println("Tail : " + storage[adjust(capacity)]); 
+      return -1;
+    } else if (isFull()) {
+      System.out.println("Tail : " + storage[adjust(tail)]); 
+      return 0;
+    } else if (tail <= capacity) {
+      System.out.println("Tail : " + storage[capacity-1]);
+      return 0;
+    } else if (tail >= capacity) {
+      System.out.println("Tail : " + storage[adjust(tail+1)]);
+      return 0;
+    } else if (!isEmpty() && !isFull()) {
+      System.out.println("Tail : " + storage[capacity-1]);
+      return 0;
+    } else {
+      System.out.println("Tail : " + storage[adjust(tail)]);
+      return 0;
+    }
+  }
+
+
+  public static void main(String[] args) {
+    ArrayQueue storage = new ArrayQueue(10);
+    storage.enqueue(1);   
+    storage.enqueue(2);    
+    storage.enqueue(3);    
+    storage.enqueue(4);    
+    storage.enqueue(5);
+    storage.enqueue(6); 
+    storage.enqueue(7); 
+    storage.enqueue(8); 
+    storage.enqueue(9);    
+    storage.enqueue(10); 
+    storage.show();
+    storage.enqueue(11);    
+    storage.dequeue();
+    storage.show();
+    storage.enqueue(12); 
+    storage.show(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.dequeue(); 
+    storage.show();
+  }  
+
 }
